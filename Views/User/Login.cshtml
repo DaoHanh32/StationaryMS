@@ -1,0 +1,58 @@
+﻿@model eProject.Models.Users
+
+@{
+    ViewData["Title"] = "NewLogin";
+    Layout = "~/Views/Shared/_Layout_Login.cshtml";
+}
+
+
+<div class="card">
+    <div class="card-body login-card-body">
+        <p class="login-box-msg">Stationery Management System</p>
+        <form asp-action="Login" method="post">
+            <div class="input-group mb-3">
+                <input type="text" asp-for="Username" class="form-control" placeholder="Enter Username...">
+                <span asp-validation-for="Username" class="text-danger"></span>
+                <div class="input-group-append">
+                    <div class="input-group-text">
+                        <span class="fa fa-user"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="input-group mb-3">
+                <input type="password" asp-for="Password" class="form-control" placeholder="Enter Password...">
+                <span asp-validation-for="Password" class="text-danger"></span>
+                <div class="input-group-append">
+                    <div class="input-group-text">
+                        <span class="fas fa-lock"></span>
+                    </div>
+                </div>
+            </div>
+
+            @if (@ViewBag.alertlogin != null && @ViewBag.alertlogin.ToString().Length > 0)
+            {
+    <div class="alert alert-@ViewBag.alertlogin">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+        <ul style="list-style: none; padding:0; margin:0">
+            @foreach (var a in @ViewBag.messagelogin)
+            {
+    <li>@Html.Raw(a)</li>}
+        </ul>
+    </div>}
+            <!-- /.col -->
+            <div style="text-align:center">
+                <input type="submit" value="Sign in" class="btn btn-primary" />
+            </div>
+            <!-- /.col -->
+        </form>
+        <!-- /.social-auth-links -->
+
+        <div class="social-auth-links text-center mb-3">
+            <a asp-controller="Admin" asp-action="Login">Are you admin?</a>
+        </div>
+        @*<div class="social-auth-links text-center mb-3">
+            @Html.ActionLink("Open Account", "Create", "User")
+        </div>*@
+    </div>
+    <!-- /.login-card-body -->
+</div>

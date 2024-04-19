@@ -1,0 +1,136 @@
+﻿@using Newtonsoft.Json.Linq
+@using Newtonsoft.Json
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+    string json = HttpContextAccessor.HttpContext.Session.GetString("cart");
+    string json_user_detail = HttpContextAccessor.HttpContext.Session.GetString("user_session");
+    Users user = null;
+    List<CartItem> listCart = new List<CartItem>();
+    decimal total_money = 0;
+    if (json != null)
+    {
+        JArray jsonResponse = JArray.Parse(json);
+
+        foreach (var item in jsonResponse)
+        {
+            JObject cartResult = (JObject)item;
+            listCart.Add(JsonConvert.DeserializeObject<CartItem>(cartResult.ToString()));
+        }
+    }
+    if (json_user_detail != null)
+    {
+        JObject jsonResponse = JObject.Parse(json_user_detail);
+        user = JsonConvert.DeserializeObject<Users>(json_user_detail.ToString());
+    }
+}
+
+@using X.PagedList;
+@using X.PagedList.Mvc.Core;
+@{
+    ViewData["Title"] = "Task List";
+  //  var pageList = (IPagedList)ViewBag.itemList;
+    Layout = "~/Views/Shared/_Layout_User.cshtml";
+}
+
+
+<div class="wrapper">
+    <div class="gambo-Breadcrumb">
+        <div class="container-fluit">
+            <div class="row">
+                <div class="col-md-10">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item active" aria-current="page"><a href="#">Report</a></li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div style="margin-left: 10px; margin-right: 10px">
+        <div class="container">
+            <div class="text-center" style="padding:10px">
+                @using (Html.BeginForm())
+                {
+                    @Html.Label("From:");
+                    <input type="datetime-local" name="fromDate" />
+                    @Html.Label("To:");
+                    <input type="datetime-local" name="toDate" />
+                    <div style="text-align:center; margin:auto; width:300px">
+                        @Html.DropDownList("Product", (IEnumerable<SelectListItem>)ViewBag.Item, new { @class = "form-control" })
+                    </div>
+                    <br />
+                    <input type="submit" value="Filter" name="Filter" class="btn-info" />
+                    <input type="submit" value="Reset" name="Submit" class="btn-info" />
+                    <br />
+                    <br />
+
+                }
+            </div>
+        </div>
+
+        <row>
+            <div>@Html.Label("Product:") @ViewBag.productname</div>
+            <div>@Html.Label("Current expense: (USD)") @ViewBag.requestTotal</div>
+            <div>@Html.Label("Percentage: (%)") @ViewBag.percentage</div>
+            <div>@Html.Label("Expense per headcount: (USD)") @ViewBag.perheadcount</div>
+
+        </row>
+        @if (ViewBag.itemList != null)
+        {
+            <table class="table table-bordered" border="1">
+                <thead>
+                    <tr>
+                        <th>Description</th>
+                        <th>Employee Name</th>
+                        <th>Date Request</th>
+                        <th>Approved Date</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in ViewBag.itemList)
+                    {
+                        <tr>
+                            <td>@item.Description</td>
+                            <td>@item.Username</td>
+                            <td>@item.DateRequest</td>
+                            <td>@item.ApprovedDate</td>
+                            <td>@item.Total</td>
+                         
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <div class="alert alert-warning">
+                <ul>
+                    <li>There is no Result</li>
+                </ul>
+            </div>
+        }
+        @*<div class="col-md-12">
+            <div class="blog-more-btn">
+                <div class="pagination-area text-center">
+                    <nav aria-label="navigation">
+                        <div>
+                            <h3 style="color:darkblue; font-size:14px">
+                                @if (pageList != null)
+                                {
+                                    @Html.PagedListPager(pageList, page => Url.Action("Create", new { page }))
+                                }
+
+                            </h3>
+                        </div>
+                    </nav>
+                </div>
+            </div>
+        </div>*@
+    </div>
+
+</div>

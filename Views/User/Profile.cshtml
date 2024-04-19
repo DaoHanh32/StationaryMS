@@ -1,0 +1,136 @@
+﻿@model eProject.Models.Users
+
+@{
+    ViewData["Title"] = "Profile";
+    Layout = "~/Views/Shared/_Layout_User.cshtml";
+}
+
+@using Newtonsoft.Json.Linq
+@using Newtonsoft.Json
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+    string json = HttpContextAccessor.HttpContext.Session.GetString("cart");
+    string json_user_detail = HttpContextAccessor.HttpContext.Session.GetString("user_detail");
+    Users user = null;
+    List<CartItem> listCart = new List<CartItem>();
+    decimal total_money = 0;
+    if (json != null)
+    {
+        JArray jsonResponse = JArray.Parse(json);
+
+        foreach (var item in jsonResponse)
+        {
+            JObject cartResult = (JObject)item;
+            listCart.Add(JsonConvert.DeserializeObject<CartItem>(cartResult.ToString()));
+        }
+    }
+    if (json_user_detail != null)
+    {
+        JObject jsonResponse = JObject.Parse(json_user_detail);
+        user = JsonConvert.DeserializeObject<Users>(json_user_detail.ToString());
+    }
+}
+<style>
+    th.style {
+        color: #0000CD;
+        width: 150px;
+        color: #191970;
+    }
+    th.style2 {
+        color: #0000CD;
+    }
+    .table {
+        margin-left: auto;
+        margin-right: auto;
+        width: 500px;
+        border-radius: 15%;
+        -moz-border-radius: 15%;
+        -webkit-border-radius: 15%;
+    }
+    h2 {
+        text-align: center;
+        color: #191970;
+    }
+    h3 {
+        text-align: center;
+        color: #0000CD;
+    }
+
+    th img {
+        border-radius: 15%;
+        -moz-border-radius: 15%;
+        -webkit-border-radius: 15%;
+        width: 100px;
+        display: block; 
+        margin-left: auto; 
+        margin-right: auto;
+    }
+</style>
+
+@section css{
+    <link href="~/css/step-wizard.css" rel="stylesheet" />
+}
+<div class="wrapper">
+    <div class="gambo-Breadcrumb">
+        <div class="container-fluit">
+            <div class="row">
+                <div class="col-md-12">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item active" aria-current="page"><a href="#">Profile</a> </li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h2>Stationery Management System</h2>
+    <h3>Welcome @Html.DisplayFor(model => model.Fullname)</h3>
+    <div style="margin-left: 10px; margin-right: 10px">
+        <div class="container-fluit">
+            <table class="table table-bordered">
+                <tr>
+                    <th colspan="2"> <img src="~/@Url.Content(Model.Images)"/></th>
+                </tr>
+                <tr>
+                    <th class="style">@Html.DisplayNameFor(model => model.User_Id)</th>
+                    <th class="style2">@Html.DisplayFor(model => model.User_Id)</th>
+                </tr>
+                <tr>
+                    <th class="style">@Html.DisplayNameFor(model => model.Username)</th>
+                    <th class="style2">@Html.DisplayFor(model => model.Username)</th>
+                </tr>
+                <tr>
+                    <th class="style">@Html.DisplayNameFor(model => model.Fullname)</th>
+                    <th class="style2">@Html.DisplayFor(model => model.Fullname)</th>
+                </tr>
+                <tr>
+                    <th class="style">@Html.DisplayNameFor(model => model.Phone)</th>
+                    <th class="style2">@Html.DisplayFor(model => model.Phone)</th>
+                </tr>
+                <tr>
+                    <th class="style">@Html.DisplayNameFor(model => model.Email)</th>
+                    <th class="style2">@Html.DisplayFor(model => model.Email)</th>
+                </tr>
+                <tr>
+                    <th class="style">@Html.DisplayNameFor(model => model.Address)</th>
+                    <th class="style2">@Html.DisplayFor(model => model.Address)</th>
+                </tr>
+                <tr>
+                    <th class="style">Department</th>
+                    <th class="style2">@ViewBag.department</th>
+                </tr>
+                <tr>
+                    <th class="style">Position</th>
+                    <th class="style2">@ViewBag.role</th>
+                </tr>
+                <tr>
+                    <th colspan="2" class="style" style="text-align: center; color: #9ACD32 ">@Html.ActionLink("Change Password", "ChangePassword", new { uname = Model.Username })</th>
+                </tr>
+            </table>
+            
+        </div>
+    </div>
+</div>
